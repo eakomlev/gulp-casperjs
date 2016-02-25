@@ -1,19 +1,20 @@
 {
-    "name": "gulp-casperjs",
+    "name": "gulp-casper-concurrent-js",
     "description": "Gulp plugin for running CasperJS scripts",
-    "version": "0.0.5",
+    "version": "1.0.0",
     "main": "index.js",
     "dependencies": {
         "through2": "*",
-        "gulp-util": "^3.0.1"
+        "gulp-util": "^3.0.1",
+        "underscore": "*"
     },
     "author": {
-        "name": "Dmytro Karpovych",
-        "email": "ZAYEC77@gmail.com"
+        "name": "Evgeniy Komlev",
+        "email": "eakomlev@gmail.com"
     },
     "repository": {
         "type": "git",
-        "url": "git://github.com/NullRefExcep/gulp-casperjs"
+        "url": "https://github.com/eakomlev/gulp-casperjs.git"
     },
     "license": "MIT",
     "keywords": [

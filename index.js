@@ -2,19 +2,22 @@ var through = require('through2');
 var gutil = require('gulp-util');
 var spawn = require('child_process').spawn;
 var PluginError = gutil.PluginError;
+var _ = require('underscore');
 
-const PLUGIN_NAME = 'gulp-casper-js';
+const PLUGIN_NAME = 'gulp-casper-concurrent-js';
 
 function casper(options) {
-    options = options || {};
-
-    var cmd = (typeof options.command === 'undefined') ? 'test' : options.command;
-
-    var outputLog = (typeof options.outputLog === 'boolean') ? options.outputLog : true;
+    options = _.extend({}, {
+        command: 'test',
+        concurrent: 1,
+        params: {
+            concise: false
+        }
+    }, options);
 
     var files = [];
 
-    var read = function(file, enc, cb) {
+    var read = function (file, enc, cb) {
         if (file.isNull()) {
             cb(null, file);
             return;
@@ -28,26 +31,20 @@ function casper(options) {
             return cb(null, file);
         }
         files.push(file.path);
-
         this.push(file);
-
         cb(null, file);
     };
 
-    var end = function(cb) {
-        cmd = cmd ? (Array.isArray(cmd) ? cmd : cmd.split(' ')) : [];
-
-        var casperChild = spawn('casperjs', cmd.concat(files));
-
-        if (outputLog) 
-            casperChild.stdout.on('data', function(data) {
-                var msg = data.toString().slice(0, -1);
-                gutil.log(PLUGIN_NAME + ':', msg);
-            });
-        }
-
+    var end = function (cb) {
+        var casperChild = spawn('casperjs', [options.command].concat(files));
         var self = this;
-        casperChild.on('close', function(code) {
+
+        casperChild.stdout.on('data', function (data) {
+            var msg = data.toString().slice(0, -1);
+            gutil.log(PLUGIN_NAME + ':', msg);
+        });
+
+        casperChild.on('close', function (code) {
             var success = code === 0;
             if (!success) {
                 self.emit('error', new PluginError({
