@@ -35,7 +35,7 @@ function casper(options) {
     };
 
     var end = function (cb) {
-        var casperChild = spawn('casperjs', getCmdOpts(options));
+        var casperChild = spawn('casperjs', getCmdOpts(options).concat(files));
         var self = this;
 
         casperChild.stdout.on('data', function (data) {
@@ -72,5 +72,9 @@ function getCmdOpts(options) {
 
     return opts;
 }
+
+//console.log(getCmdOpts({params: {
+//    concise: true
+//}}));
 
 module.exports = casper;
