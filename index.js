@@ -60,12 +60,12 @@ function casper(options) {
 
 function getCmdOpts(options) {
     var opts = ['test'];
-    for (var key in options) {
-        if (options.hasOwnProperty(key) && key != 'params') {
-            if (typeof options[key] == 'boolean' && options[key]) {
+    for (var key in options.params) {
+        if (options.params.hasOwnProperty(key)) {
+            if (typeof options.params[key] == 'boolean' && options.params[key]) {
                 opts.push('--' + key);
             } else {
-                opts.push('--' + key + '=' + options[key]);
+                opts.push('--' + key + '=' + options.params[key]);
             }
         }
     }
