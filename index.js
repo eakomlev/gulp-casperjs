@@ -8,7 +8,6 @@ const PLUGIN_NAME = 'gulp-casper-concurrent-js';
 
 function casper(options) {
     options = _.extend({}, {
-        command: 'test',
         concurrent: 1,
         params: {
             concise: false
@@ -36,7 +35,7 @@ function casper(options) {
     };
 
     var end = function (cb) {
-        var casperChild = spawn('casperjs', [options.command].concat(files));
+        var casperChild = spawn('casperjs', getCmdOpts(options));
         var self = this;
 
         casperChild.stdout.on('data', function (data) {
@@ -57,6 +56,21 @@ function casper(options) {
     };
 
     return through.obj(read, end);
+}
+
+function getCmdOpts(options) {
+    var opts = ['test'];
+    for (var key in options) {
+        if (options.hasOwnProperty(key) && key != 'params') {
+            if (typeof options[key] == 'boolean' && options[key]) {
+                opts.push('--' + key);
+            } else {
+                opts.push('--' + key + '=' + options[key]);
+            }
+        }
+    }
+
+    return opts;
 }
 
 module.exports = casper;
