@@ -5,13 +5,13 @@ A [gulp](https://github.com/gulpjs/gulp) plugin for running [CasperJS](https://g
 ## Install
 
 ```
-npm install --save-dev gulp-casperjs
+npm install --save-dev gulp-casper-concurrent-js
 ```
 
 ## Usages
 
 ```js
-var casperJs = require('gulp-casperjs');
+var casperJs = require('gulp-casper-concurrent-js');
 gulp.task('test', function () {
   gulp.src('Globs of test files')
     .pipe(casperJs()); //run casperjs test
@@ -19,7 +19,7 @@ gulp.task('test', function () {
 ```
 To change the command (default: `test`) use parameter `command`:
 ```js
-var casperJs = require('gulp-casperjs');
+var casperJs = require('gulp-casper-concurrent-js');
 gulp.task('casperCmd', function () {
   gulp.src('test.js')
     .pipe(casperJs({command:''})); //run casperjs test.js
@@ -30,7 +30,7 @@ If command has value which cast to `false`, this parameter will be ignored.
 
 To hide output from CasperJS use parameter `outputLog`:
 ```js
-var casperJs = require('gulp-casperjs');
+var casperJs = require('gulp-casper-concurrent-js');
 gulp.task('casperCmd', function () {
   gulp.src('test.js')
     .pipe(casperJs({outputLog: false})); //CasperJS output not show
