@@ -1,25 +1,26 @@
 var through = require('through2');
 var gutil = require('gulp-util');
 var PluginError = gutil.PluginError;
-var _ = require('underscore');
-var RunnerPool = require('./runnerPool');
+var extend = require('util')._extend;
+var async = require('async');
+var worker = require('./worker');
 
 const PLUGIN_NAME = 'gulp-casper-concurrent-js';
 
 function casper(options) {
-    
-    var opts = _.extend({}, {
-        concurrent: 1,
+    var opts = extend({}, {
+        concurrency: 1,
         params: {
             concise: false
         }
     }, options);
+    var queue = async.queue(worker, opts.concurrency);
+    var deferred = Promise.defer();
+    queue.drain = function () {
+        deferred.resolve();
+    };
 
-    var d = [];
-
-    RunnerPool.setMaxRunner(opts.concurrent);
-
-    var read = function (file, enc, cb) {
+    return through.obj(function (file, enc, cb) {
         if (file.isNull()) {
             cb(null, file);
             return;
@@ -34,18 +35,14 @@ function casper(options) {
             return cb(null, file);
         }
 
-        d.push(RunnerPool.queue(file, opts));
+        queue.push({file: file, options: opts});
         this.push(file);
         cb(null, file);
-    };
-
-    var end = function (cb) {
-        Promise.all(d).then(function () {
+    }, function (cb) {
+        deferred.promise.then(function () {
             cb();
-        });
-    };
-
-    return through.obj(read, end);
+        })
+    });
 }
 
 module.exports = casper;

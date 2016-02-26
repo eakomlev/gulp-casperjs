@@ -1,11 +1,12 @@
 {
     "name": "gulp-casper-concurrent-js",
     "description": "Gulp plugin for running CasperJS scripts",
-    "version": "3.0.0",
+    "version": "3.0.2",
     "main": "index.js",
     "dependencies": {
         "through2": "*",
         "gulp-util": "^3.0.1",
+        "async": "*",
         "underscore": "*"
     },
     "author": {
