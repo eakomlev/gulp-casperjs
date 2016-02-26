@@ -3,18 +3,21 @@ var gutil = require('gulp-util');
 var spawn = require('child_process').spawn;
 var PluginError = gutil.PluginError;
 var _ = require('underscore');
+var RunnerPool = require('./runnerPool');
 
 const PLUGIN_NAME = 'gulp-casper-concurrent-js';
 
 function casper(options) {
-    options = _.extend({}, {
+    var opts = _.extend({}, {
         concurrent: 1,
         params: {
             concise: false
         }
     }, options);
 
-    var files = [];
+    var d = [];
+
+    RunnerPool.setMaxRunner(opts.concurrent);
 
     var read = function (file, enc, cb) {
         if (file.isNull()) {
@@ -27,54 +30,48 @@ function casper(options) {
                 plugin: PLUGIN_NAME,
                 message: 'Streams are not supported.'
             }));
+
             return cb(null, file);
         }
-        files.push(file.path);
+
+        d.push(RunnerPool.queue(file, opts));
         this.push(file);
         cb(null, file);
     };
 
     var end = function (cb) {
-        var casperChild = spawn('casperjs', getCmdOpts(options).concat(files));
-        var self = this;
+        var plugin = this;
 
-        casperChild.stdout.on('data', function (data) {
-            var msg = data.toString().slice(0, -1);
-            gutil.log(PLUGIN_NAME + ':', msg);
-        });
-
-        casperChild.on('close', function (code) {
-            var success = code === 0;
-            if (!success) {
-                self.emit('error', new PluginError({
-                    plugin: PLUGIN_NAME,
-                    message: 'code ' + code
-                }));
-            }
+        Promise.all(d).then(function () {
             cb();
+        }, function (err) {
+            plugin.emit('error', new PluginError({
+                plugin: PLUGIN_NAME,
+                message: err.message
+            }));
         });
     };
 
     return through.obj(read, end);
 }
 
-function getCmdOpts(options) {
-    var opts = ['test'];
-    for (var key in options.params) {
-        if (options.params.hasOwnProperty(key)) {
-            if (typeof options.params[key] == 'boolean' && options.params[key]) {
-                opts.push('--' + key);
-            } else {
-                opts.push('--' + key + '=' + options.params[key]);
-            }
-        }
-    }
-
-    return opts;
-}
-
-//console.log(getCmdOpts({params: {
-//    concise: true
-//}}));
+//RunnerPool.setMaxRunner(1);
+//
+//var d = [];
+//
+//d.push(RunnerPool.queue('file1'));
+//d.push(RunnerPool.queue('file2'));
+//d.push(RunnerPool.queue('file3'));
+//d.push(RunnerPool.queue('file4'));
+//d.push(RunnerPool.queue('file5'));
+//d.push(RunnerPool.queue('file6'));
+//
+//Promise.all(d).then(function () {
+//    console.log('end tasks');
+//});
+//
+//setTimeout(function () {
+//    console.log('end');
+//}, 10000);
 
 module.exports = casper;
