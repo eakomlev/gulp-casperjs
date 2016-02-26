@@ -1,6 +1,5 @@
 var through = require('through2');
 var gutil = require('gulp-util');
-var spawn = require('child_process').spawn;
 var PluginError = gutil.PluginError;
 var _ = require('underscore');
 var RunnerPool = require('./runnerPool');
@@ -40,15 +39,8 @@ function casper(options) {
     };
 
     var end = function (cb) {
-        var plugin = this;
-
         Promise.all(d).then(function () {
             cb();
-        }, function (err) {
-            plugin.emit('error', new PluginError({
-                plugin: PLUGIN_NAME,
-                message: err.message
-            }));
         });
     };
 

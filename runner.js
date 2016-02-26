@@ -13,13 +13,13 @@ Runner.prototype.exec = function (data) {
 
         casperChild.stdout.on('data', function (data) {
             var msg = data.toString().slice(0, -1);
-            gutil.log('gulp-casper-concurrent-js' + ':', msg);
+            gutil.log('gulp-casper-concurrent-js' + ': ['+ data.file +']', msg);
         });
 
         casperChild.on('close', function (code) {
             var success = code === 0;
             if (!success) {
-                reject(new Error(code));
+                gutil.error('gulp-casper-concurrent-js' + ': ['+ data.file +']', code);
             }
 
             resolve({
@@ -27,15 +27,6 @@ Runner.prototype.exec = function (data) {
                 data: data
             });
         });
-
-        //console.log('start ' + data.file);
-        //setTimeout(function () {
-        //    console.log('end ' + data.file);
-        //    resolve({
-        //        runner: runner,
-        //        data: data
-        //    });
-        //}, Math.random() * 1000);
     });
 };
 
