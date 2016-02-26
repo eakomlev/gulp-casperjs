@@ -9,17 +9,17 @@ Runner.prototype.exec = function (data) {
     var runner = this;
 
     return new Promise(function (resolve, reject) {
-        var casperChild = spawn('casperjs', getCmdOpts(data.options).concat([data.file]));
+        var casperChild = spawn('casperjs', getCmdOpts(data.options).concat([data.file.path]));
 
-        casperChild.stdout.on('data', function (data) {
-            var msg = data.toString().slice(0, -1);
-            gutil.log('gulp-casper-concurrent-js' + ': ['+ data.file +']', msg);
+        casperChild.stdout.on('data', function (message) {
+            var msg = message.toString().slice(0, -1);
+            gutil.log('gulp-casper-concurrent-js' + ': ['+ data.file.basename +']', msg);
         });
 
         casperChild.on('close', function (code) {
             var success = code === 0;
             if (!success) {
-                gutil.error('gulp-casper-concurrent-js' + ': ['+ data.file +']', code);
+                gutil.error('gulp-casper-concurrent-js' + ': ['+ data.file.basename +']', code);
             }
 
             resolve({

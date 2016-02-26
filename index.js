@@ -7,6 +7,7 @@ var RunnerPool = require('./runnerPool');
 const PLUGIN_NAME = 'gulp-casper-concurrent-js';
 
 function casper(options) {
+    
     var opts = _.extend({}, {
         concurrent: 1,
         params: {
@@ -33,7 +34,7 @@ function casper(options) {
             return cb(null, file);
         }
 
-        d.push(RunnerPool.queue(file.path, opts));
+        d.push(RunnerPool.queue(file, opts));
         this.push(file);
         cb(null, file);
     };
@@ -46,24 +47,5 @@ function casper(options) {
 
     return through.obj(read, end);
 }
-
-//RunnerPool.setMaxRunner(1);
-//
-//var d = [];
-//
-//d.push(RunnerPool.queue('file1'));
-//d.push(RunnerPool.queue('file2'));
-//d.push(RunnerPool.queue('file3'));
-//d.push(RunnerPool.queue('file4'));
-//d.push(RunnerPool.queue('file5'));
-//d.push(RunnerPool.queue('file6'));
-//
-//Promise.all(d).then(function () {
-//    console.log('end tasks');
-//});
-//
-//setTimeout(function () {
-//    console.log('end');
-//}, 10000);
 
 module.exports = casper;
