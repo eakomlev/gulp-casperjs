@@ -34,7 +34,7 @@ function casper(options) {
             return cb(null, file);
         }
 
-        d.push(RunnerPool.queue(file, opts));
+        d.push(RunnerPool.queue(file.path, opts));
         this.push(file);
         cb(null, file);
     };
