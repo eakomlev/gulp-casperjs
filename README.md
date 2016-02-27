@@ -17,7 +17,7 @@ var casperJs = require('gulp-casper-concurrent-js');
 gulp.task('test', function () {
   gulp.src('Globs of test files')
     .pipe(casperJs({
-        concurrency: 2,
+        concurrency: 2, // amount of parallel tasks (default 1)
         params: {
             //casperjs options
         }
