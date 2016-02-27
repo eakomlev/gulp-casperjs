@@ -1,4 +1,4 @@
-# gulp-casperjs
+# gulp-casper-concurrent-js
 
 A [gulp](https://github.com/gulpjs/gulp) plugin for running [CasperJS](https://github.com/n1k0/casperjs) scripts
 
@@ -10,33 +10,22 @@ npm install --save-dev gulp-casper-concurrent-js
 
 ## Usages
 
+Set concurrency option to run tests in parallel
+
 ```js
 var casperJs = require('gulp-casper-concurrent-js');
 gulp.task('test', function () {
   gulp.src('Globs of test files')
-    .pipe(casperJs()); //run casperjs test
+    .pipe(casperJs({
+        concurrency: 2,
+        params: {
+            //casperjs options
+        }
+    })); //run casperjs test
 });
 ```
-To change the command (default: `test`) use parameter `command`:
-```js
-var casperJs = require('gulp-casper-concurrent-js');
-gulp.task('casperCmd', function () {
-  gulp.src('test.js')
-    .pipe(casperJs({command:''})); //run casperjs test.js
-});
-```
-Command can be `array` or `string`.
-If command has value which cast to `false`, this parameter will be ignored.
+Please see CasperJS options
 
-To hide output from CasperJS use parameter `outputLog`:
-```js
-var casperJs = require('gulp-casper-concurrent-js');
-gulp.task('casperCmd', function () {
-  gulp.src('test.js')
-    .pipe(casperJs({outputLog: false})); //CasperJS output not show
-});
-```
-Default value is `true`
 ## LICENSE
 
 The MIT License (MIT)
