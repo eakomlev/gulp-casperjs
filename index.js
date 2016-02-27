@@ -8,12 +8,13 @@ var worker = require('./worker');
 const PLUGIN_NAME = 'gulp-casper-concurrent-js';
 
 function casper(options) {
-    var opts = extend({}, {
+    var opts = extend({
         concurrency: 1,
         params: {
             concise: false
         }
     }, options);
+
     var queue = async.queue(worker, opts.concurrency);
     var deferred = Promise.defer();
     queue.drain = function () {

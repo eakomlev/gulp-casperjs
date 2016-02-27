@@ -24,13 +24,13 @@ module.exports = function (task, callback) {
 
     casperChild.stdout.on('data', function (message) {
         var msg = message.toString().slice(0, -1);
-        gutil.log('gulp-casper-concurrent-js' + ': [' + path.basename(task.file.path) + ']', msg);
+        gutil.log('gulp-casper' + ': [' + path.basename(task.file.path) + ']', msg);
     });
 
     casperChild.on('close', function (code) {
         var success = code === 0;
         if (!success) {
-            gutil.log('gulp-casper-concurrent-js' + ': [' + path.basename(task.file.path) + ']', code);
+            gutil.log('gulp-casper' + ': [' + path.basename(task.file.path) + ']', code);
         }
 
         callback();
