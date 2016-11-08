@@ -20,7 +20,7 @@ function getCmdOpts(options) {
 }
 
 module.exports = function (task, callback) {
-    var casperChild = spawn('casperjs', getCmdOpts(task.options).concat([task.file.path]));
+    var casperChild = spawn('./node_modules/casperjs/bin/casperjs', getCmdOpts(task.options).concat([task.file.path]));
 
     casperChild.stdout.on('data', function (message) {
         var msg = message.toString().slice(0, -1);
