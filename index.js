@@ -4,6 +4,7 @@ var PluginError = gutil.PluginError;
 var extend = require('util')._extend;
 var async = require('async');
 var worker = require('./worker');
+var phantomjs = require('phantomjs');
 
 const PLUGIN_NAME = 'gulp-casper-concurrent-js';
 
@@ -14,6 +15,8 @@ function casper(options) {
             concise: false
         }
     }, options);
+
+    process.env.PHANTOMJS_EXECUTABLE = phantomjs.path;
 
     var queue = async.queue(worker, opts.concurrency);
     var deferred = Promise.defer();
