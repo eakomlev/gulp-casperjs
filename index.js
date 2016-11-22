@@ -4,7 +4,7 @@ var PluginError = gutil.PluginError;
 var extend = require('util')._extend;
 var async = require('async');
 var worker = require('./worker');
-var phantomjs = require('phantomjs');
+var phantomjs = require('phantomjs-prebuilt');
 
 const PLUGIN_NAME = 'gulp-casper-concurrent-js';
 
