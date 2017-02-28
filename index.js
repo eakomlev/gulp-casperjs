@@ -5,6 +5,7 @@ var extend = require('util')._extend;
 var async = require('async');
 var worker = require('./worker');
 var phantomjs = require('phantomjs-prebuilt');
+var Promise = require('bluebird');
 
 const PLUGIN_NAME = 'gulp-casper-concurrent-js';
 
@@ -18,11 +19,12 @@ function casper(options) {
 
     process.env.PHANTOMJS_EXECUTABLE = phantomjs.path;
 
-    var queue = async.queue(worker, opts.concurrency);
-    var deferred = Promise.defer();
-    queue.drain = function () {
-        deferred.resolve();
-    };
+    var queue = async.queue(worker, opts.concurrency),
+        promise = new Promise(function (resolve, reject) {
+            queue.drain = function () {
+                resolve();
+            };
+        });
 
     return through.obj(function (file, enc, cb) {
         if (file.isNull()) {
@@ -43,9 +45,9 @@ function casper(options) {
         this.push(file);
         cb(null, file);
     }, function (cb) {
-        deferred.promise.then(function () {
+        promise.then(function () {
             cb();
-        })
+        });
     });
 }
 
